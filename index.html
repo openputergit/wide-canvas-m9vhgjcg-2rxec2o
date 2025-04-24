@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Wall Pattern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .brick-wall {
+            background-color: #4A8B9F;
+            background-image: 
+                linear-gradient(335deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(155deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(335deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(155deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 0, 0 10px, 10px 10px;
+        }
+
+        .brick {
+            position: relative;
+            background-color: #4A8B9F;
+            margin: 2px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .brick::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-4xl p-8">
+        <div class="brick-wall rounded-lg shadow-2xl p-8 min-h-[400px] grid grid-cols-6 gap-2">
+            <!-- Generated brick pattern -->
+            <script>
+                const container = document.querySelector('.brick-wall');
+                const brickCount = 60; // Adjust number of bricks as needed
+
+                for (let i = 0; i < brickCount; i++) {
+                    const brick = document.createElement('div');
+                    brick.className = 'brick h-16 rounded transition-all duration-300 hover:brightness-110 cursor-pointer';
+                    container.appendChild(brick);
+                }
+
+                // Add interactive hover effect
+                container.addEventListener('mousemove', (e) => {
+                    const bricks = document.querySelectorAll('.brick');
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    bricks.forEach(brick => {
+                        const brickRect = brick.getBoundingClientRect();
+                        const brickX = brickRect.left - rect.left + brickRect.width / 2;
+                        const brickY = brickRect.top - rect.top + brickRect.height / 2;
+
+                        const distance = Math.sqrt(
+                            Math.pow(x - brickX, 2) + 
+                            Math.pow(y - brickY, 2)
+                        );
+
+                        const intensity = Math.max(0, 1 - distance / 200);
+                        brick.style.transform = `scale(${1 + intensity * 0.1})`;
+                        brick.style.brightness = `${100 + intensity * 20}%`;
+                    });
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    const bricks = document.querySelectorAll('.brick');
+                    bricks.forEach(brick => {
+                        brick.style.transform = 'scale(1)';
+                        brick.style.brightness = '100%';
+                    });
+                });
+            </script>
+        </div>
+    </div>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
